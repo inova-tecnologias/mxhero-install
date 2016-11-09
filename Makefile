@@ -21,6 +21,6 @@ build:
 	tar --transform "s/^\./mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64/" -czf build/mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz --exclude=*.tar.gz --exclude=.git* --exclude=Makefile .
 
 upload:
-	aws s3 cp ./build/mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz s3://mxhero/releases
+	aws s3 cp ./build/mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz s3://mxhero/releases/mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz
 
 .PHONY: build upload
