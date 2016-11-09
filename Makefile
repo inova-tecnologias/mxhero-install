@@ -17,9 +17,9 @@ info:
 build:
 	mkdir -p ./build
 	curl -L https://s3.amazonaws.com/mxhero/releases/mxhero_${MXHEROVERSION}_amd64.deb > packages/mxhero-amd64.deb
-	tar -czf mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz --exclude=*.tar.gz --exclude=.git* .
+	git archive --prefix mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64/ -o build/mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz master
 
 upload:
-	aws cp ./build/mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz s3://mxhero/releases
+	aws s3 cp ./build/mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz s3://mxhero/releases
 
 .PHONY: build push
