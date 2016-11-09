@@ -22,4 +22,4 @@ build:
 upload:
 	aws s3 cp ./build/mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz s3://mxhero/releases
 
-.PHONY: build push
+.PHONY: build upload
