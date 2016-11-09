@@ -5,18 +5,21 @@ AK ?=
 # AWS SECRET KEY
 SK ?= 
 
+export AWS_ACCESS_KEY_ID=${AK}
+export AWS_SECRET_ACCESS_KEY=${SK}
+
 info:
-	@echo "VERSION:          ${VERSION}"
-	@echo "MXHEROVERSION:    ${MXHEROVERSION}"
-	@echo "AK (ACCESSKEY):   ${AK}"
-	@echo "SK (SECRETKEY):   ${SK}"
+	@echo "MXHEROVERSION (.deb version):     ${MXHEROVERSION}"
+	@echo "VERSION (this package version):   ${VERSION}"
+	@echo "AK (aws accesskey):               ${AK}"
+	@echo "SK (aws secretkey):               ${SK}"
 
 build:
 	mkdir -p ./build
-	wget https://s3/mxhero/releases -o packages/mxhero-amd64.deb
-	tar -czf mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz .
+	curl -L https://s3.amazonaws.com/mxhero/releases/mxhero_${MXHEROVERSION}_amd64.deb > packages/mxhero-amd64.deb
+	tar -czf mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz --exclude=*.tar.gz --exclude=.git* .
 
-push:
+upload:
 	aws cp ./build/mxhero-PROFESSIONAL-${VERSION}_UBUNTU16_64.tar.gz s3://mxhero/releases
 
 .PHONY: build push
