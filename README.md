@@ -8,7 +8,11 @@ cd mxhero-PROFESSIONAL-<VERSION>_UBUNTU16_64.tar.gz
 
 ## Build new release
 
+- Requires `make` for building
+- Requires `awscli` for uploading
+
 ```bash
+apt install -y make awscli
 git clone https://github.com/inova-tecnologias/mxhero-install.git && cd mxhero-install
 
 VERSION=X.X.X-X make build
