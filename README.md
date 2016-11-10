@@ -19,5 +19,5 @@ VERSION=X.X.X-X make build
 VERSION=X.X.X-X AK=aws-access-key-id SK=aws-secret-key make upload
 ```
 
-> *WARNING:* passing the aws credentials through bash will keep then memorized on the user history
-> make sure to clean up the history or put the credentials into a file and export it properly.
+> *WARNING:* passing the aws credentials through bash will keep then memorized on the user history,
+> make sure to clean it up or put the credentials into a file and export it properly.
