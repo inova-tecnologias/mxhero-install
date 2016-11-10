@@ -22,6 +22,10 @@ function echo_subtitle(){
     echo "==>> $1"
 }
 
+function echo_thin_sub(){
+    echo "=>>> $1"
+}
+
 function echo_sub(){
     echo "     $1"
 }
@@ -34,112 +38,66 @@ function ctrl_c() {
 }
 
 function install_packages(){
-    # MySQL packages
-    dpkg -i $PACKAGES_PATH/mysql-server/mysql-common_5.7.16-0ubuntu0.16.04.1_all.deb
-    dpkg -i $PACKAGES_PATH/mysql-server/libaio1_0.3.110-2_amd64.deb
-    dpkg -i $PACKAGES_PATH/mysql-server/libevent-core-2.0-5_2.0.21-stable-2_amd64.deb
-    dpkg -i $PACKAGES_PATH/mysql-server/libhtml-template-perl_2.95-2_all.deb
-    dpkg -i $PACKAGES_PATH/mysql-server/mysql-client-core-5.7_5.7.16-0ubuntu0.16.04.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/mysql-server/mysql-client-5.7_5.7.16-0ubuntu0.16.04.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/mysql-server/mysql-server-core-5.7_5.7.16-0ubuntu0.16.04.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/mysql-server/mysql-server-5.7_5.7.16-0ubuntu0.16.04.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/mysql-server/mysql-server_5.7.16-0ubuntu0.16.04.1_all.deb
-
-    # COMMON LIBS
-    # required for php5
-    dpkg -i $PACKAGES_PATH/libs/libmysqlclient20_5.7.16-0ubuntu0.16.04.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/libs/libxslt1.1_1.1.28-2.1_amd64.deb 
-    dpkg -i $PACKAGES_PATH/libs/libssl1.0.2_1.0.2j-1+deb.sury.org~xenial+1_amd64.deb
+    echo_thin_sub "installing common libs ..."
+    # required for php5/spamassassin/clamav/libapache5/apache2
+    dpkg -i $PACKAGES_PATH/libs/*.deb > /dev/null
     
-    # required for spamassassin
-    dpkg -i $PACKAGES_PATH/libs/libnetaddr-ip-perl_4.078+dfsg-1build1_amd64.deb
-    dpkg -i $PACKAGES_PATH/libs/libmail-spf-perl_2.9.0-4_all.deb
+    echo_thin_sub "installing perl packages ..."
+    dpkg -i $PACKAGES_PATH/perl/*.deb > /dev/null
     
-    # required for clamav
-    dpkg -i $PACKAGES_PATH/libs/libllvm3.6v5_1-3.6.2-3ubuntu2_amd64.deb
-    dpkg -i $PACKAGES_PATH/libs/libclamav7_0.99.2+dfsg-0ubuntu0.16.04.1_amd64.deb
+    echo_thin_sub "installing mysql-server packages ..."
+    dpkg -i $PACKAGES_PATH/mysql-server/mysql-common_5.7.16-0ubuntu0.16.04.1_all.deb > /dev/null
+    bash -c "DEBIAN_FRONTEND=noninteractive dpkg -i $PACKAGES_PATH/mysql-server/*.deb > /dev/null"
 
-    # required for libapache5/apache2
-    dpkg -i $PACKAGES_PATH/libs/liblua5.1-0_5.1.5-8ubuntu1_amd64.deb 
-    dpkg -i $PACKAGES_PATH/libs/libaprutil1-dbd-sqlite3_1.5.4-1build1_amd64.deb
-    dpkg -i $PACKAGES_PATH/libs/libaprutil1-ldap_1.5.4-1build1_amd64.deb
-    dpkg -i $PACKAGES_PATH/libs/libxslt1.1_1.1.28-2.1_amd64.deb
+    echo_thin_sub "installing postfix packages ..."
+    bash -c "DEBIAN_FRONTEND=noninteractive dpkg -i $PACKAGES_PATH/postfix/*.deb > /dev/null"
+    
+    echo_thin_sub "installing php5 packages ..."
+    dpkg -i $PACKAGES_PATH/php5/*.deb > /dev/null 2>&1
 
-    # Postfix 
-    DEBIAN_FRONTEND=noninteractive dpkg -i $PACKAGES_PATH/postfix/postfix_3.1.0-3_amd64.deb
-    dpkg -i $PACKAGES_PATH/postfix/postfix-mysql_3.1.0-3_amd64.deb
+    echo_thin_sub "installing spamassassin packages ..."
+    dpkg -i $PACKAGES_PATH/spamassassin/*.deb > /dev/null
+    
+    echo_thin_sub "installing clamav packages ..." 
+    dpkg -i $PACKAGES_PATH/clamav/*.deb > /dev/null
 
-    # php5
-    dpkg -i $PACKAGES_PATH/php5/php-common_1-45+deb.sury.org~xenial+1_all.deb
-    dpkg -i $PACKAGES_PATH/php5/php5.5-common_5.5.38-4+deb.sury.org~xenial+1_amd64.deb
-    dpkg -i $PACKAGES_PATH/php5/php5.5-xml_5.5.38-4+deb.sury.org~xenial+1_amd64.deb
-    dpkg -i $PACKAGES_PATH/php5/php5.5-readline_5.5.38-4+deb.sury.org~xenial+1_amd64.deb
-    dpkg -i $PACKAGES_PATH/php5/php5.5-opcache_5.5.38-4+deb.sury.org~xenial+1_amd64.deb
-    dpkg -i $PACKAGES_PATH/php5/php5.5-mysql_5.5.38-4+deb.sury.org~xenial+1_amd64.deb
-    dpkg -i $PACKAGES_PATH/php5/php5.5-json_5.5.38-4+deb.sury.org~xenial+1_amd64.deb
-    dpkg -i $PACKAGES_PATH/php5/php5.5-cli_5.5.38-4+deb.sury.org~xenial+1_amd64.deb
+    echo_thin_sub "installing dovecot packages ..."
+    dpkg -i $PACKAGES_PATH/dovecot/*.deb > /dev/null 2>&1
 
-    # spamassassin
-    dpkg -i $PACKAGES_PATH/spamassassin/re2c_0.16-1_amd64.deb
-    dpkg -i $PACKAGES_PATH/spamassassin/spamc_3.4.1-3_amd64.deb
-    dpkg -i $PACKAGES_PATH/spamassassin/spamassassin_3.4.1-3_all.deb
-    dpkg -i $PACKAGES_PATH/spamassassin/sa-compile_3.4.1-3_all.deb 
+    echo_thin_sub "installing apache2 packages ..."
+    dpkg -i $PACKAGES_PATH/apache2/*.deb > /dev/null
 
-    # clamav
-    dpkg -i $PACKAGES_PATH/clamav/clamav-base_0.99.2+dfsg-0ubuntu0.16.04.1_all.deb
-    dpkg -i $PACKAGES_PATH/clamav/clamav-freshclam_0.99.2+dfsg-0ubuntu0.16.04.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/clamav/clamav_0.99.2+dfsg-0ubuntu0.16.04.1_amd64.deb
+    echo_thin_sub "installing libapache5 packages ..."
+    dpkg -i $PACKAGES_PATH/libapache2-mod-php5.5/libapache2-mod-php5.5_5.5.38-4+deb.sury.org~xenial+1_amd64.deb > /dev/null 2>&1
+    
+    systemctl stop apache2
+    
+    echo_thin_sub "installing nginx packages ..."
+    dpkg -i $PACKAGES_PATH/nginx/*.deb > /dev/null
 
-    # dovecot
-    dpkg -i $PACKAGES_PATH/dovecot/dovecot-core_1-2.2.22-1ubuntu2.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/dovecot/dovecot-imapd_1-2.2.22-1ubuntu2.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/dovecot/dovecot-mysql_1-2.2.22-1ubuntu2.1_amd64.deb
-
-    # apache2
-    dpkg -i $PACKAGES_PATH/apache2/apache2-utils_2.4.18-2ubuntu3.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/apache2/apache2-bin_2.4.18-2ubuntu3.1_amd64.deb
-    dpkg -i $PACKAGES_PATH/apache2/apache2-data_2.4.18-2ubuntu3.1_all.deb
-    dpkg -i $PACKAGES_PATH/apache2/apache2_2.4.18-2ubuntu3.1_amd64.deb
-
-    # libapache5
-    dpkg -i $PACKAGES_PATH/libapache2-mod-php5.5/libapache2-mod-php5.5_5.5.38-4+deb.sury.org~xenial+1_amd64.deb
-
-    # nginx
-    dpkg -i $PACKAGES_PATH/nginx/libxpm4_1-3.5.11-1_amd64.deb
-    dpkg -i $PACKAGES_PATH/nginx/libwebp5_0.4.4-1+deb.sury.org~xenial+1_amd64.deb
-    dpkg -i $PACKAGES_PATH/nginx/libgd3_2.2.3-3+deb.sury.org~xenial+0_amd64.deb
-    dpkg -i $PACKAGES_PATH/nginx/nginx-common_1.10.0-0ubuntu0.16.04.4_all.deb
-    dpkg -i $PACKAGES_PATH/nginx/nginx-core_1.10.0-0ubuntu0.16.04.4_amd64.deb
-    dpkg -i $PACKAGES_PATH/nginx/nginx_1.10.0-0ubuntu0.16.04.4_all.deb
-
-    # mxHero appliance
-    dpkg -i $PACKAGES_PATH/mxhero-amd64.deb
+    rm -rf /opt/mxhero
+    echo_thin_sub "installing mxhero appliance ..."
+    dpkg -i $PACKAGES_PATH/mxhero-amd64.deb > /dev/null
 }
+
 
 function purge_dependencies(){
     echo_sub "purging dependencies packages ..."
-    # libapache5
-    dpkg --purge libapache2-mod-php5.5
-    # apache2
-    dpkg --purge apache2 apache2-data apache2-bin apache2-utils
-    # dovecot
-    dpkg --purge dovecot-mysql dovecot-imapd dovecot-core
-    # clamav 
-    dpkg --purge clamav clamav-freshclam clamav-base
-    # spamassassin
-    dpkg --purge sa-compile spamassassin spamc re2c
-    # php5
-    dpkg --purge php5.5-xml php5.5-mysql php5.5-cli php5.5-json \
-    php5.5-opcache php5.5-readline php5.5-common php-common
-    # Postfix 
-    dpkg --purge postfix-mysql postfix
-    # MySQL
-    dpkg --purge mysql-server mysql-server-5.7 mysql-server-core-5.7 \
-    mysql-client-5.7 mysql-client-core-5.7 libmysqlclient20 mysql-common
-    # Libs
-    dpkg --purge libxslt1.1 libaprutil1-ldap libaprutil1-dbd-sqlite3 liblua5.1-0 \
-    libclamav7 libllvm3.6v5 libmail-spf-perl libnetaddr-ip-perl libssl1.0.2
-    # nginx
+    
+    dpkg --purge ssl-cert postfix-mysql postfix nginx-common libtiff5 libgd3 libwebp5 fonts-dejavu-core \
+    fontconfig-config libvpx3 libfontconfig1 nginx-core libjbig0 libjpeg-turbo8 nginx libgd3 libjpeg8 \
+    libxpm4 libapache2-mod-php5.5 libnet-dns-perl libtimedate-perl liblwp-mediatypes-perl libsocket6-perl \
+    libio-html-perl libcgi-fast-perl libhtml-parser-perl libhtml-template-perl libhtml-tagset-perl \
+    libhttp-date-perl libencode-locale-perl libcgi-pm-perl libfcgi-perl libhttp-message-perl libdigest-hmac-perl \
+    libmail-spf-perl libnet-ip-perl liburi-perl libio-socket-inet6-perl apache2-bin apache2-data apache2 apache2-utils \
+    mysql-client-5.7 mysql-server-5.7 mysql-common mysql-server mysql-client-core-5.7 mysql-server-core-5.7 libaio1 \
+    libevent-core-2.0-5 clamav-base libcurl3 clamav clamav-freshclam gcc-5 libsys-hostname-long-perl libgcc-5-dev \
+    libtsan0 cpp-5 libmpc3 cpp make libgomp1 re2c spamc manpages-dev libquadmath0 libmpx0 libisl15 sa-compile \
+    linux-libc-dev libatomic1 libcc1-0 libasan2 gcc liblsan0 libc-dev-bin binutils spamassassin libc6-dev libitm1 \
+    libubsan0 libcilkrts5 python3-mysqldb dovecot-core libexttextcat-2.0-0 libexttextcat-data dovecot-imapd \
+    dovecot-mysql libnetaddr-ip-perl libmysqlclient20 libaprutil1 libapr1 libllvm3.6v5 libltdl7 libssl1.0.2 \
+    libaprutil1-ldap liblua5.1-0 libaprutil1-dbd-sqlite3 libclamav7 libxslt1.1 php5.5-cli php5.5-opcache \
+    php-common php5.5-readline php5.5-xml php5.5-json php5.5-common php5.5-mysql
 }
 
 function check_packages() {
@@ -207,6 +165,7 @@ function create_default_database_users(){
     /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON attachments.* TO attachmentlink@'localhost' IDENTIFIED BY 'attachmentlink'"
     /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON mxhero.* TO mxhero@'localhost' IDENTIFIED BY 'mxhero'"
     /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON mxhero.* TO mxhero@'%' IDENTIFIED BY 'mxhero'"
+    /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON roundcubemail.* TO 'mxhero'@'%'"
     /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON attachments.* TO 'mxhero'@'%'"
     /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON statistics.* TO 'mxhero'@'%'"
     /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON threadlight.* TO 'mxhero'@'%'"
@@ -265,7 +224,8 @@ function configure_roundcube(){
     cp $ROOTFS/etc/apache2/sites-enabled/roundcube.conf /etc/apache2/sites-enabled/roundcube.conf
     cp $ROOTFS/etc/apache2/ports.conf /etc/apache2/ports.conf
 
-    chown www-data: -R /$ROUNDCUBE_PATH
+    ln -s $MXHERO_PATH/web/roundcube /var/www/roundcube
+    chown www-data: -R /var/www
 
     echo_sub "restarting apache2 service ..."
     systemctl restart apache2
@@ -287,7 +247,7 @@ function configure_dovecot(){
     sed -i 's/#!include auth-master.conf.ext/!include auth-master.conf.ext/g' $DOVECOT_CONF_PATH/10-auth.conf
 
     sed -i 's/#valid_chroot_dirs =/valid_chroot_dirs = \/opt\/maildir-mxhero\/%d/g' $DOVECOT_CONF_PATH/10-mail.conf
-    sed -i "s/#first_valid_gid/first_valid_gid=${MXHERO_USER_ID}/g" $DOVECOT_CONF_PATH/10-mail.conf
+    sed -i "s/#first_valid_gid.*/first_valid_gid=${MXHERO_USER_ID}/g" $DOVECOT_CONF_PATH/10-mail.conf
     sed -i 's/^mail_location.*/mail_location = maildir:\/opt\/maildir-mxhero\/%d\/%n/g' $DOVECOT_CONF_PATH/10-mail.conf
 
     # Create an delegated admin account
@@ -309,11 +269,28 @@ function configure_server_time(){
     timedatectl set-timezone Etc/UTC
 }
 
+function configure_environment_lang(){
+    cat << EOF > /etc/environment
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
+LANG="en_US.UTF-8"
+LC_MESSAGES="C"
+LC_ALL="en_US.UTF-8"
+EOF
+    source /etc/environment
+}
+
+function configure_security_limits(){
+    grep ^mxhero /etc/security/limits.conf || \
+    echo -e "mxhero soft nofile 524288\nmxhero soft nofile 524288" >> /etc/security/limits.conf
+    grep ^root /etc/security/limits.conf || \
+    echo -e "root soft nofile 524288\nroot soft nofile 524288" >> /etc/security/limits.conf 
+}
+
 function installation_notes() {
     echo "==============="
     echo "if you wish to install the mxHero zimlet (Zimbra Only)"
     echo "run the command on every mailbox server:"
-    echo "wget https://s3-server/zimletao.zip && zmzimletctl deploy /tmp/zimletao.zip"
+    echo "wget https://s3.amazonaws.com/mxhero/com_mxhero_zimlet.zip -O /tmp/com_mxhero_zimlet.zip && zmzimletctl deploy /tmp/com_mxhero_zimlet.zip"
 
     echo "run on a single mailbox server:" 
     echo 'zmprov mcf +zimbraCustomMimeHeaderNameAllowed X-mxHero-Actions'

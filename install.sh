@@ -22,9 +22,6 @@ set -o pipefail
 
 # exit 0;
 
-# TODO: Execute script to prompt for installation configuration
-# Generates a yaml file!
-
 # TODO: dovecot ubuntu packing - OK
 # TODO: mxhero ubuntu packing - OK
 # TODO: configure system to mxhero package - OK
@@ -32,7 +29,10 @@ set -o pipefail
 # TODO: logrotate and cron to mxhero install package!  - OK
 
 
-# TODO: disable update to mxhero installed packages!
+# TODO: disable update to mxhero installed packages! - OK
+# TODO: /etc/security/limits.conf (mxhero/root) - OK
+# TODO: stored procedure mysql
+# TODO: /etc/mysql/my.cnf
 
 # https://ubuntuforums.org/showthread.php?t=910717
 # http://packaging.ubuntu.com/html/getting-set-up.html
@@ -43,14 +43,13 @@ if [ ! -z $DEBUG ]; then
 fi
 
 source utils/functions.sh
-STEPS=10
+export STEPS=10
 
 echo_title "Installing mxHero"
 echo_subtitle "step 1/$STEPS - installing packages, this may take a while ..."
 
 # if the required packages are installed, skip the installation process
-check_packages > /dev/null || \
-install_packages > /dev/null 2>&1
+check_packages > /dev/null || install_packages
 
 check_packages > /dev/null && true
 
@@ -60,8 +59,10 @@ if [ ! $? -eq 0 ]; then
         exit $?
 fi
 
-echo_subtitle "step 2/$STEPS - configuring server time ..."
+echo_subtitle "step 2/$STEPS - configuring server: time,lang,limits ..."
 configure_server_time
+configure_environment_lang
+configure_security_limits
 
 echo_subtitle "step 3/$STEPS - creating 'mxhero' linux user ..."
 create_linux_user
