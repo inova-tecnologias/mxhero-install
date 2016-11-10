@@ -204,6 +204,9 @@ function configure_postfix(){
     postmulti -I postfix-mxh -G mxhero -e create 2> /dev/null
     postmulti -i postfix-mxh -e enable
 
+    sed -i 's/^master_service_disable = inet/#master_service_disable = inet/g' /etc/postfix-mxh/main.cf 
+    sed -i 's/^authorized_submit_users = /#authorized_submit_users = /g' /etc/postfix-mxh/main.cf
+
     echo_sub "restarting postfix ..."
     systemctl restart postfix
 }
@@ -224,7 +227,7 @@ function configure_roundcube(){
     cp $ROOTFS/etc/apache2/sites-enabled/roundcube.conf /etc/apache2/sites-enabled/roundcube.conf
     cp $ROOTFS/etc/apache2/ports.conf /etc/apache2/ports.conf
 
-    ln -s $MXHERO_PATH/web/roundcube /var/www/roundcube
+    ln -s /$MXHERO_PATH/web/roundcube /var/www/roundcube || true
     chown www-data: -R /var/www
 
     echo_sub "restarting apache2 service ..."
