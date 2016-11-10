@@ -2,11 +2,11 @@
 
 ```bash
 wget https://s3.amazonaws.com/mxhero/releases/mxhero-PROFESSIONAL-<VERSION>_UBUNTU16_64.tar.gz
-cd mxhero-PROFESSIONAL-<VERSION>_UBUNTU16_64.tar.gz
+cd mxhero-PROFESSIONAL-<VERSION>_UBUNTU16_64
 ./install.sh
 ```
 
-## Build new release
+## Build a new release
 
 - Requires `make` for building
 - Requires `awscli` for uploading
