@@ -159,6 +159,13 @@ function create_databases(){
     /usr/bin/mysql -u root -D statistics < $BASEPATH/data/statistics-schema.sql
     /usr/bin/mysql -u root -D text2image < $BASEPATH/data/text2image.sql
     /usr/bin/mysql -u root -D threadlight < $BASEPATH/data/threadlight.sql
+
+    echo_sub "loading procedures and events ..."
+    /usr/bin/mysql -u root -D mxhero < $BASEPATH/data/functions/mxhero.sql
+    /usr/bin/mysql -u root -D secureemail < $BASEPATH/data/functions/secureemail.sql
+    /usr/bin/mysql -u root -D statistics < $BASEPATH/data/functions/statistics.sql
+    /usr/bin/mysql -u root -D threadlight < $BASEPATH/data/functions/threadlight.sql
+
 }
 
 function create_default_database_users(){
@@ -179,6 +186,16 @@ function create_linux_user(){
 
 function install_license(){
     echo "install license"
+}
+
+function configure_mysql(){
+    cp $ROOTFS/etc/mysql/mysql.conf.d/mxhero.conf /etc/mysql/mysql.conf.d/mxhero.conf
+    # Total memory in KiloBytes
+    TOTALMEMORY=$(grep MemTotal: /proc/meminfo |awk {'print $2'})
+    INNODBPOOLSIZE=$(echo "$(($TOTALMEMORY * 30 / 100))")
+    sed -i "s|INNODBPOOLSIZE|$INNODBPOOLSIZE|g" /etc/mysql/mysql.conf.d/mxhero.conf
+    echo_sub "restarting mysql ..."
+    systemctl restart mysql 
 }
 
 function configure_postfix(){
@@ -284,9 +301,9 @@ EOF
 
 function configure_security_limits(){
     grep ^mxhero /etc/security/limits.conf || \
-    echo -e "mxhero soft nofile 524288\nmxhero soft nofile 524288" >> /etc/security/limits.conf
+    echo -e "mxhero soft nofile 524288\nmxhero soft nofile 524288" >> /etc/security/limits.conf > /dev/null
     grep ^root /etc/security/limits.conf || \
-    echo -e "root soft nofile 524288\nroot soft nofile 524288" >> /etc/security/limits.conf 
+    echo -e "root soft nofile 524288\nroot soft nofile 524288" >> /etc/security/limits.conf > /dev/null
 }
 
 function installation_notes() {
