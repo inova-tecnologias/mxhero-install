@@ -22,21 +22,6 @@ set -o pipefail
 
 # exit 0;
 
-# TODO: dovecot ubuntu packing - OK
-# TODO: mxhero ubuntu packing - OK
-# TODO: configure system to mxhero package - OK
-# TODO: change perms and create mxhero symlinks and quarantine folder - OK
-# TODO: logrotate and cron to mxhero install package!  - OK
-
-
-# TODO: disable update to mxhero installed packages! - OK
-# TODO: /etc/security/limits.conf (mxhero/root) - OK
-# TODO: stored procedure mysql
-# TODO: /etc/mysql/my.cnf
-
-# https://ubuntuforums.org/showthread.php?t=910717
-# http://packaging.ubuntu.com/html/getting-set-up.html
-
 if [ ! -z $DEBUG ]; then
     echo "debug on!"
     set -x
@@ -79,7 +64,8 @@ configure_dovecot
 echo_subtitle "step 7/$STEPS - configuring postfix ..."
 configure_postfix
 
-echo_subtitle "step 8/$STEPS - creating databases ..."
+echo_subtitle "step 8/$STEPS - configuring mysql ..."
+configure_mysql
 create_databases
 
 echo_subtitle "step 9/$STEPS - creating database users ..."
