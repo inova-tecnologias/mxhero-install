@@ -12,7 +12,19 @@ MXHERO_PATH=opt/mxhero
 
 PACKAGES_PATH=packages
 
+programname=$0
 trap ctrl_c INT
+
+function usage {
+    echo "usage: $programname [-l file] [-s env]"
+    echo "  -h          Display help"
+    echo "  -v          Debug with set -x"
+    echo "  -u          Uninstall"
+    echo "  -l <filie>  License file"
+    echo "  -s <env>    Skip a installation process"
+    echo "  envs        FORCE_INSTALLATION - skips the port and package check"
+    exit 1
+}
 
 function echo_title(){
     echo "===> $1"
@@ -75,7 +87,6 @@ function install_packages(){
     echo_thin_sub "installing nginx packages ..."
     dpkg -i $PACKAGES_PATH/nginx/*.deb > /dev/null
 
-    rm -rf /opt/mxhero
     echo_thin_sub "installing mxhero appliance ..."
     dpkg -i $PACKAGES_PATH/mxhero-amd64.deb > /dev/null
 }
@@ -100,10 +111,66 @@ function purge_dependencies(){
     php-common php5.5-readline php5.5-xml php5.5-json php5.5-common php5.5-mysql
 }
 
-function check_packages() {
-    dpkg -l mysql-server postfix postfix-mysql dovecot-core dovecot-imapd \
-    dovecot-mysql spamassassin clamav apache2 libapache2-mod-php5.5 \
-    php5.5-mysql php5.5-xml nginx mxhero
+function mxhero_prerequisites() {
+    if [ -d /$MXHERO_PATH ]; then
+        echo "FATAL! /$MXHERO_PATH exists"
+        echo "FATAL! uninstall the package and remove the folder"
+        echo ""
+        exit 1
+    fi 
+
+    # Required ports for the installation, check if there are any services binding then
+    for port in 25 26 143 5555 5556 4000 2401 9090 5701 8005 8009 8080 80 443 3306; do
+        lsof -i :$port >/dev/null|| continue
+        echo "FATAL! the port '$port' is in use!"
+        echo "FATAL! cannot proceed with the installation!"
+        echo "FATAL! exiting ..."
+        echo ""
+        exit 1
+    done
+ 
+    PACKAGE=
+    for pkg in ssl-cert postfix-mysql postfix nginx-common libtiff5 libgd3 libwebp5 fonts-dejavu-core \
+    fontconfig-config libvpx3 libfontconfig1 nginx-core libjbig0 libjpeg-turbo8 nginx libgd3 libjpeg8 \
+    libxpm4 libapache2-mod-php5.5 libnet-dns-perl libtimedate-perl liblwp-mediatypes-perl libsocket6-perl \
+    libio-html-perl libcgi-fast-perl libhtml-parser-perl libhtml-template-perl libhtml-tagset-perl \
+    libhttp-date-perl libencode-locale-perl libcgi-pm-perl libfcgi-perl libhttp-message-perl libdigest-hmac-perl \
+    libmail-spf-perl libnet-ip-perl liburi-perl libio-socket-inet6-perl apache2-bin apache2-data apache2 apache2-utils \
+    mysql-client-5.7 mysql-server-5.7 mysql-common mysql-server mysql-client-core-5.7 mysql-server-core-5.7 libaio1 \
+    libevent-core-2.0-5 clamav-base libcurl3 clamav clamav-freshclam gcc-5 libsys-hostname-long-perl libgcc-5-dev \
+    libtsan0 cpp-5 libmpc3 cpp make libgomp1 re2c spamc manpages-dev libquadmath0 libmpx0 libisl15 sa-compile \
+    linux-libc-dev libatomic1 libcc1-0 libasan2 gcc liblsan0 libc-dev-bin binutils spamassassin libc6-dev libitm1 \
+    libubsan0 libcilkrts5 python3-mysqldb dovecot-core libexttextcat-2.0-0 libexttextcat-data dovecot-imapd \
+    dovecot-mysql libnetaddr-ip-perl libmysqlclient20 libaprutil1 libapr1 libllvm3.6v5 libltdl7 libssl1.0.2 \
+    libaprutil1-ldap liblua5.1-0 libaprutil1-dbd-sqlite3 libclamav7 libxslt1.1 php5.5-cli php5.5-opcache \
+    php-common php5.5-readline php5.5-xml php5.5-json php5.5-common php5.5-mysql mxhero; do
+        # If the package is not found, check the next one,
+        # otherwise set the a variable and break the loop
+        dpkg -l |grep "$package\s" >/dev/null || continue && PACKAGE=$pkg && break
+    done
+
+    # We found a package installed on the server, warn the user
+    if [ -z $PACKAGE ]; then
+        echo ""
+        echo "WARNING! the package '$package' is already installed!"
+        echo "WARNING! this is not a fresh install or a package is already installed and in use!"
+        echo "WARNING! mxHero requires to be installed on a clean server"
+        echo "WARNING! THE INSTALLED PACKAGES WILL BE MODIFIED!"
+        echo "WARNING! ONLY PROCEED IF YOU KNOW WHAT ARE YOU DOING!"
+        echo ""
+        echo "press (Y) to continue or (N) to cancel ..."
+        echo -n "> "
+        read key
+        if [[ $key != "Y" ]]; then
+            echo "exiting the installation script ..."
+            echo ""
+            exit 1
+        fi
+        echo "the installation will proceed in 5 seconds ..."
+        echo ""
+        # Give time for the user to cancel using ctrl_C
+        sleep 5
+    fi
 }
 
 function uninstall() {
