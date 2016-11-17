@@ -2,47 +2,57 @@
 set -o errexit
 set -o pipefail
 
-# TODO: set lock after the installation is finished
+source utils/functions.sh
 
-# while getopts "l:f:" OPTION; do
-#     echo $OPTION $OPTARG
-#     case $OPTION in
-#     l)
-#         LICENSE_FILE=$OPTARG
-#         ;;
-#     c)
-#         CONFIG=$OPTARG
-#         ;;
-#     *)  
-#         echo "Incorrect options provided"
-#         exit 1
-#         ;;
-#     esac
-# done
-
-# exit 0;
+while getopts "u:l:s:vh" OPTION; do
+    case $OPTION in
+    l)
+        LICENSE=$OPTARG
+        ;;
+    s)
+        if [ $OPTARG == "FORCE_INSTALL" ]; then
+            FORCE_INSTALL=1
+        fi
+        ;;
+    v)
+        DEBUG=1
+        ;;
+    u)
+        UNINSTALL=1
+        ;;
+    h)
+        usage
+        ;;
+    *)
+        echo "Incorrect options provided"
+        usage
+        exit 1
+        ;;
+    esac
+done
 
 if [ ! -z $DEBUG ]; then
     echo "debug on!"
     set -x
 fi
 
-source utils/functions.sh
+# Uninstall packages and mxhero
+if [ ! -z $UNINSTALL ]; then
+    uninstall
+    exit 0
+fi
+
 export STEPS=10
+
+if [ -z $FORCE_INSTALL ]; then
+    # Check if any ports are listening or if a package is already installed
+    mxhero_prerequisites
+fi
 
 echo_title "Installing mxHero"
 echo_subtitle "step 1/$STEPS - installing packages, this may take a while ..."
 
-# if the required packages are installed, skip the installation process
-check_packages > /dev/null || install_packages
-
-check_packages > /dev/null && true
-
-if [ ! $? -eq 0 ]; then
-        echo_subtitle "fail: missing a required package"
-        echo_subtitle "try running the installation script with the DEBUG flag"
-        exit $?
-fi
+install_packages
 
 echo_subtitle "step 2/$STEPS - configuring server: time,lang,limits ..."
 configure_server_time

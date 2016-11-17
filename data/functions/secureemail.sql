@@ -25,7 +25,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = '' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE EVENT `daily_secureemail_messages_cleaner` ON SCHEDULE EVERY 10 MINUTE STARTS '2014-04-03 01:20:36' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'Delete old messages' DO BEGIN
+/*!50106 CREATE EVENT IF NOT EXISTS `daily_secureemail_messages_cleaner` ON SCHEDULE EVERY 10 MINUTE STARTS '2014-04-03 01:20:36' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'Delete old messages' DO BEGIN
         DELETE FROM secureemail.messages 
         WHERE (DATEDIFF(now(), sent_time) >= remaining_days 
         AND remaining_days>0) 
