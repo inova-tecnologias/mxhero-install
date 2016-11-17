@@ -84,6 +84,10 @@ create_default_database_users
 echo_subtitle "step 10/$STEPS - configuring nginx proxy ..."
 configure_nginx
 
+# If the service is stopped, start it
+systemctl status mxheroweb >/dev/null || systemctl start mxheroweb
+systemctl status mxhero >/dev/null || systemctl start mxhero
+
 echo_title "installation completed!"
 echo ""
 

@@ -243,6 +243,7 @@ function create_default_database_users(){
     /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON attachments.* TO 'mxhero'@'%'"
     /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON statistics.* TO 'mxhero'@'%'"
     /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON threadlight.* TO 'mxhero'@'%'"
+    /usr/bin/mysql -u root -Bse "GRANT ALL PRIVILEGES ON text2image.* TO 'mxhero'@'%'"
     /usr/bin/mysql -u root -Bse "FLUSH PRIVILEGES"
 }
 
@@ -332,6 +333,7 @@ function configure_dovecot(){
 
     sed -i 's/#!include auth-sql.conf.ext/!include auth-sql.conf.ext/g' $DOVECOT_CONF_PATH/10-auth.conf
     sed -i 's/#!include auth-master.conf.ext/!include auth-master.conf.ext/g' $DOVECOT_CONF_PATH/10-auth.conf
+    sed -i 's/\#auth_master_user_separator=/auth_master_user_separator=/g' $DOVECOT_CONF_PATH/10-auth.conf
 
     sed -i 's/#valid_chroot_dirs =/valid_chroot_dirs = \/opt\/maildir-mxhero\/%d/g' $DOVECOT_CONF_PATH/10-mail.conf
     sed -i "s/#first_valid_gid.*/first_valid_gid=${MXHERO_USER_ID}/g" $DOVECOT_CONF_PATH/10-mail.conf

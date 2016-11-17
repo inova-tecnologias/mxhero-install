@@ -45,17 +45,18 @@ multi_instance_wrapper = ${command_directory}/postmulti -p --
 multi_instance_enable = yes
 
 # mxHero MODS
-# relay_domains = proxy:mysql:/etc/postfix/mxhero/domains.sql
-# transport_maps = proxy:mysql:/etc/postfix/mxhero/transports.sql
-# message_size_limit = 70428800
-# smtpd_recipient_limit = 1000
-# bounce_queue_lifetime = 12h
-# maximal_queue_lifetime = 12h
-# default_destination_concurrency_limit = 10
-# smtp_connection_cache_on_demand = yes
-# smtp_connection_cache_destinations = uol.com.br, terra.com.br, yahoo.com, yahoo.com.br, hotmail.com, gmail.com
-# smtp_connection_cache_time_limit = 30s
-# milter_default_action = accept
+relay_domains = proxy:mysql:/etc/postfix/mxhero/domains.sql
+transport_maps = proxy:mysql:/etc/postfix/mxhero/transports.sql
+message_size_limit = 10240000
+smtpd_recipient_limit = 1000
+bounce_queue_lifetime = 12h
+maximal_queue_lifetime = 12h
+default_destination_concurrency_limit = 10
+smtp_connection_cache_on_demand = yes
+smtp_connection_cache_destinations = uol.com.br, terra.com.br, yahoo.com, yahoo.com.br, hotmail.com, gmail.com
+smtp_connection_cache_time_limit = 30s
+milter_default_action = accept
 # header_checks = regexp:/etc/postfix/header_checks
-# alternate_config_directories = /etc/postfix-out
+# alternate_config_directories = /etc/postfix-mxh
+# ---
 
