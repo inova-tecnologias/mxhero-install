@@ -25,7 +25,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE EVENT `delete_old` ON SCHEDULE EVERY 1 HOUR STARTS '2012-02-17 10:17:11' ON COMPLETION NOT PRESERVE ENABLE DO CALL threadlight.delete_old_threads() */ ;;
+/*!50106 CREATE EVENT IF NOT EXISTS `delete_old` ON SCHEDULE EVERY 1 HOUR STARTS '2012-02-17 10:17:11' ON COMPLETION NOT PRESERVE ENABLE DO CALL threadlight.delete_old_threads() */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -46,6 +46,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
+/*!50003 DROP PROCEDURE IF EXISTS `delete_old_threads`*/;;
 /*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `delete_old_threads`()
 BEGIN
 

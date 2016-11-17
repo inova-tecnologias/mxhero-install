@@ -25,7 +25,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE EVENT `add_records_parts` ON SCHEDULE EVERY 1 DAY STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO CALL partition_add (CURRENT_DATE()+INTERVAL 7 DAY, 'mail_records','statistics') */ ;;
+/*!50106 CREATE EVENT IF NOT EXISTS `add_records_parts` ON SCHEDULE EVERY 1 DAY STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO CALL partition_add (CURRENT_DATE()+INTERVAL 7 DAY, 'mail_records','statistics') */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -42,7 +42,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE EVENT `add_stats_parts` ON SCHEDULE EVERY 1 DAY STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO CALL partition_add(CURRENT_DATE()+INTERVAL 7 DAY,'mail_stats','statistics') */ ;;
+/*!50106 CREATE EVENT IF NOT EXISTS `add_stats_parts` ON SCHEDULE EVERY 1 DAY STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO CALL partition_add(CURRENT_DATE()+INTERVAL 7 DAY,'mail_stats','statistics') */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -59,7 +59,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE EVENT `drop_records_parts` ON SCHEDULE EVERY 1 DAY STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO CALL partition_drop(CURRENT_DATE()-INTERVAL 20 DAY,'mail_records','statistics') */ ;;
+/*!50106 CREATE EVENT IF NOT EXISTS `drop_records_parts` ON SCHEDULE EVERY 1 DAY STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO CALL partition_drop(CURRENT_DATE()-INTERVAL 20 DAY,'mail_records','statistics') */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -76,7 +76,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE EVENT `drop_stats_parts` ON SCHEDULE EVERY 1 DAY STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO CALL partition_drop(CURRENT_DATE()-INTERVAL 20 DAY,'mail_stats','statistics') */ ;;
+/*!50106 CREATE EVENT IF NOT EXISTS `drop_stats_parts` ON SCHEDULE EVERY 1 DAY STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO CALL partition_drop(CURRENT_DATE()-INTERVAL 20 DAY,'mail_stats','statistics') */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -93,7 +93,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = '' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE EVENT `group_all_stats` ON SCHEDULE EVERY 5 MINUTE STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO call group_statistics(now()) */ ;;
+/*!50106 CREATE EVENT IF NOT EXISTS `group_all_stats` ON SCHEDULE EVERY 5 MINUTE STARTS '2016-10-21 20:48:45' ON COMPLETION NOT PRESERVE ENABLE DO call group_statistics(now()) */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -114,6 +114,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
+/*!50003 DROP PROCEDURE IF EXISTS `group_statistics`*/;;
 /*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `group_statistics`(IN P_DATE DATETIME)
 BEGIN
 
@@ -208,6 +209,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
+/*!50003 DROP PROCEDURE IF EXISTS `partition_add`*/;;
 /*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `partition_add`(IN through_date date, IN tbl varchar(64), IN db varchar(64))
 BEGIN
 DECLARE add_me char(10);
@@ -257,6 +259,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
+/*!50003 DROP PROCEDURE IF EXISTS `partition_drop`*/;;
 /*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `partition_drop`(IN through_date date, IN tbl varchar(64), IN db varchar(64))
 BEGIN
 DECLARE delete_me varchar(64);
