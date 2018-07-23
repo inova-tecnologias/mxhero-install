@@ -85,7 +85,7 @@ CREATE TABLE `app_users` (
 
 LOCK TABLES `app_users` WRITE;
 /*!40000 ALTER TABLE `app_users` DISABLE KEYS */;
-INSERT INTO `app_users` VALUES (1,'2016-11-09 14:54:59','','MyLastName',NULL,'pt_BR','mxHero Admin','','21232f297a57a5a743894a0e4a801fc3','\0','admin',NULL,NULL,NULL);
+INSERT INTO `app_users` VALUES (1,'2016-11-09 14:54:59','','MyLastName',NULL,'pt_BR','mxHero Admin','',MD5('GLOBAL_ADMIN_PASSWORD'),'\0','admin',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `app_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
