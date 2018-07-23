@@ -143,6 +143,7 @@ sed -i 's/\#auth_master_user_separator =.*/auth_master_user_separator = \*/g' /e
 sed -i 's/#valid_chroot_dirs =/valid_chroot_dirs = \/opt\/maildir-mxhero\/%d/g' /etc/dovecot/conf.d/10-mail.conf
 sed -i "s/#first_valid_gid.*/first_valid_gid=$(id mxhero -u)/g" /etc/dovecot/conf.d/10-mail.conf
 sed -i 's/^mail_location.*/mail_location = maildir:\/opt\/maildir-mxhero\/%d\/%n/g' /etc/dovecot/conf.d/10-mail.conf
+sed -i "s/MXHEROUID/$(id mxhero -u)/g" /etc/dovecot/dovecot-sql.conf.ext
 htpasswd -b -c -s /etc/dovecot/master-users mxhero mxhero
 /etc/init.d/dovecot restart
 
