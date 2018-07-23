@@ -127,7 +127,7 @@ password_query = \
 #   user_query = SELECT home, 501 AS uid, 501 AS gid FROM users WHERE userid = '%u'
 #
 user_query = \
-  SELECT '/opt/maildir-mxhero/%d/%n' as home, 1001 AS uid, 1001 AS gid \
+  SELECT '/opt/maildir-mxhero/%d/%n' as home, MXHEROUID AS uid, MXHEROUID AS gid \
     FROM ( \
       (SELECT IF(au.user_name IS NULL, d.domain, au.user_name) as username \
             ,IF(au.account IS NULL,'quarantine.mxhero.com', d.domain) as domain \
