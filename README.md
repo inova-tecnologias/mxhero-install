@@ -21,6 +21,8 @@ Usage: ./ubuntu16_installer.sh [ARGS]
 	-a --admin: Global admin password. Default: mxheroadmin
 	-m --mysql: Mysql root password. Default: root
 ```
+
+![alt-text](example.gif)
 #### Policies
 ---
  - Signature Auto
