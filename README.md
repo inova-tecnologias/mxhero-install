@@ -1,6 +1,7 @@
 # MXGateway installer
 
 MxGateway is an email information traffic management tool for companies and ISPs, where you can have real time email use control.
+![alt-text](example.gif)
 
 ### Usage:
 
@@ -22,7 +23,6 @@ Usage: ./ubuntu16_installer.sh [ARGS]
 	-m --mysql: Mysql root password. Default: root
 ```
 
-![alt-text](example.gif)
 #### Policies
 ---
  - Signature Auto
