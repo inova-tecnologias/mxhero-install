@@ -119,9 +119,9 @@ id mxhero >/dev/null 2>/dev/null || \
 adduser --gecos "" --no-create-home --disabled-password --quiet --shell /bin/bash mxhero
 
 # CONFIGURE MXHERO
-mkdir -m 0750 -p /opt/maildir-mxhero \ 
-&&  chown mxhero: -R /opt/maildir-mxhero \
-&&  chown mxhero: -R /opt/mxhero
+mkdir -m 0750 -p /opt/maildir-mxhero && \ 
+chown -R mxhero: /opt/maildir-mxhero && \
+chown -R mxhero: /opt/mxhero
 /bin/systemctl enable mxhero && /bin/systemctl enable mxheroweb
 
 # CONFIGURE ROUNDCUBE
