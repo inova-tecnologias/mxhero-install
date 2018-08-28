@@ -170,7 +170,7 @@ INNODBPOOLSIZE=$(echo "$(($TOTALMEMORY * 30 / 100))"); \
 sed -i "s|INNODBPOOLSIZE|$INNODBPOOLSIZE|g" /etc/mysql/mysql.conf.d/mxhero.conf
 
 # INITIALIZE MYSQL
-sed -i "s/GLOBAL_ADMIN_PASSWORD/$GLOBAL_ADMIN_PASSWORD/g" data/mxhero.sql
+sed -i "s/GLOBAL_ADMIN_PASSWORD/$GLOBAL_ADMIN_PASSWD/g" data/mxhero.sql
 # # CREATE DATABASES
 /usr/bin/mysql -u root -proot -Bse "CREATE DATABASE IF NOT EXISTS attachments"
 /usr/bin/mysql -u root -proot -Bse "CREATE DATABASE IF NOT EXISTS mxhero"
