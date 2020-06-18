@@ -148,7 +148,7 @@ htpasswd -b -c -s /etc/dovecot/master-users mxhero mxhero
 /etc/init.d/dovecot restart
 
 # CONFIGURE POSTFIX
-cp -f  postfix/* /etc/postfix/
+cp -rf  postfix/* /etc/postfix/
 
 sed -i "s|MXHEROMYNETWORKS|$MYNETWORKS|g" /etc/postfix/main.cf.proto /etc/postfix/main.cf
 sed -i "s/MXHEROHOSTNAME/`hostname`/g" /etc/postfix/main.cf.proto /etc/postfix/main.cf
